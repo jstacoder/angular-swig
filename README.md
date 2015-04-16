@@ -6,4 +6,9 @@
 *   writeTemplate - factory that given a filename and data will write it to the system
 *   swigProvider - provider to allow changing swigOptions
 
+to use just add angular.swig.app as a dependency:
+
+```coffeescript
+app = angular.module 'my.cool.app',['angular.swig.app']
+```
 
