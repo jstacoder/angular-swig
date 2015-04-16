@@ -1,6 +1,6 @@
 'use strict'
 
-app = angular.module 'angular.swig.app',[]
+app = angular.module 'angular.swig.app',['node.fs.app']
 
 app.provider 'swig',[()->
     self = @
@@ -35,10 +35,9 @@ app.provider 'swig',[()->
     return rtn
 ]
 
-app.factory 'loadTemplate',['$q',($q)->
+app.factory 'loadTemplate',['nodeFs','$q',(fs,$q)->
     def = $q.defer()
 
-    fs = require 'fs'
     return (filename,getBuffer)->
         fs.readFile filename,(err,res)->
             if err
@@ -59,9 +58,8 @@ app.factory 'render',['swig',(swig)->
         return swig.render template,{locals:context}
 ]
 
-app.factory 'writeOut',['$q',($q)->
+app.factory 'writeOut',['nodeFs','$q',(fs,$q)->
     return (out,data)->
-        fs = require('fs')
         def = $q.defer()
         fs.writeFile out,data,(err,res)->
             if err

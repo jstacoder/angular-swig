@@ -2,7 +2,7 @@
 
 var app;
 
-app = angular.module('angular.swig.app', []);
+app = angular.module('angular.swig.app', ['node.fs.app']);
 
 app.provider('swig', [
   function() {
@@ -51,10 +51,9 @@ app.provider('swig', [
 ]);
 
 app.factory('loadTemplate', [
-  '$q', function($q) {
-    var def, fs;
+  'nodeFs', '$q', function(fs, $q) {
+    var def;
     def = $q.defer();
-    fs = require('fs');
     return function(filename, getBuffer) {
       fs.readFile(filename, function(err, res) {
         if (err) {
@@ -85,10 +84,9 @@ app.factory('render', [
 ]);
 
 app.factory('writeOut', [
-  '$q', function($q) {
+  'nodeFs', '$q', function(fs, $q) {
     return function(out, data) {
-      var def, fs;
-      fs = require('fs');
+      var def;
       def = $q.defer();
       fs.writeFile(out, data, function(err, res) {
         if (err) {
