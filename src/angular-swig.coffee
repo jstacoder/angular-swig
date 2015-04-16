@@ -35,12 +35,31 @@ app.provider 'swig',[()->
     return rtn
 ]
 
-app.factory 'render',['swig',(swig)->
-    return (template,context)->
-        swig.render template,{locals:context}
+app.factory 'loadTemplate',['$q',($q)->
+    def = $q.defer()
+
+    fs = require 'fs'
+    return (filename,getBuffer)->
+        fs.readFile filename,(err,res)->
+            if err
+                console.log "rejected by #{err}"
+                def.reject err
+            else
+                if getBuffer
+                    def.resolve res
+                else
+                    console.log "#{res.toString()}  loaded"
+                    def.resolve res.toString()
+            return
+        return def.promise
 ]
 
-app.factory 'writeTemplate',['$q',($q)->
+app.factory 'render',['swig',(swig)->
+    return (template,context)->
+        return swig.render template,{locals:context}
+]
+
+app.factory 'writeOut',['$q',($q)->
     return (out,data)->
         fs = require('fs')
         def = $q.defer()
@@ -50,6 +69,22 @@ app.factory 'writeTemplate',['$q',($q)->
             else
                 def.resolve res
         return def.promise
+]
+
+app.factory 'renderTemplate',['render','writeOut','loadTemplate',(render,writeOut,loadTemplate)->
+    return (templateName,outfile,context)->
+        console.log 'here?'
+        loadTemplate(templateName).then (res)->
+            writeOut(
+                outfile,render(
+                    res,context
+                )
+            ).then (res)->
+                    if res
+                        console.log "wrote file: #{outFile} from #{templateName}"
+                return
+            return
+        return
 ]
 
 

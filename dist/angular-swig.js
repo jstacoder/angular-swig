@@ -50,6 +50,30 @@ app.provider('swig', [
   }
 ]);
 
+app.factory('loadTemplate', [
+  '$q', function($q) {
+    var def, fs;
+    def = $q.defer();
+    fs = require('fs');
+    return function(filename, getBuffer) {
+      fs.readFile(filename, function(err, res) {
+        if (err) {
+          console.log("rejected by " + err);
+          def.reject(err);
+        } else {
+          if (getBuffer) {
+            def.resolve(res);
+          } else {
+            console.log("" + (res.toString()) + "  loaded");
+            def.resolve(res.toString());
+          }
+        }
+      });
+      return def.promise;
+    };
+  }
+]);
+
 app.factory('render', [
   'swig', function(swig) {
     return function(template, context) {
@@ -60,7 +84,7 @@ app.factory('render', [
   }
 ]);
 
-app.factory('writeTemplate', [
+app.factory('writeOut', [
   '$q', function($q) {
     return function(out, data) {
       var def, fs;
@@ -74,6 +98,22 @@ app.factory('writeTemplate', [
         }
       });
       return def.promise;
+    };
+  }
+]);
+
+app.factory('renderTemplate', [
+  'render', 'writeOut', 'loadTemplate', function(render, writeOut, loadTemplate) {
+    return function(templateName, outfile, context) {
+      console.log('here?');
+      loadTemplate(templateName).then(function(res) {
+        writeOut(outfile, render(res, context)).then(function(res) {
+          if (res) {
+            return console.log("wrote file: " + outFile + " from " + templateName);
+          }
+        });
+        return;
+      });
     };
   }
 ]);
