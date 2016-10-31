@@ -1,6 +1,6 @@
 {
   "name": "angular-swig",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "integrate swig and angular",
   "main": "dist/angular-swig.js",
   "scripts": {
