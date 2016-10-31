@@ -1,8 +1,8 @@
 {
   "name": "angular-swig",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "integrate swig and angular",
-  "main": "angular-swig.js",
+  "main": "dist/angular-swig.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,7 +15,8 @@
     "angular": "^1.3.15",
     "benv": "^1.1.0",
     "ng": "0.0.0-rc6",
-    "node-ng": "0.0.3",
+    "node-ng": "0.0.13",
+    "angular-node-fs":"0.0.3",
     "swig": "^1.4.2"
   }
 }
